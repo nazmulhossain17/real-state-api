@@ -1,0 +1,22 @@
+{
+  "name": "real-state-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nazmulhossain17/real-state-api.git"
+  },
+  "author": "Syed Nazmul Hossain",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nazmulhossain17/real-state-api/issues"
+  },
+  "homepage": "https://github.com/nazmulhossain17/real-state-api#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
