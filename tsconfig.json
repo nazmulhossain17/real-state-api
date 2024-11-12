@@ -1,0 +1,15 @@
+{
+  "include": ["src", "types.d.ts"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "Node16", // updated to match moduleResolution
+    "rootDir": "./src",
+    "moduleResolution": "node16",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  }
+}
