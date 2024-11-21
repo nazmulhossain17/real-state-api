@@ -25,7 +25,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });
 
-// Not Found route (404 error)
+// Not Found route (404 error) *
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
