@@ -11,6 +11,7 @@ export interface IUser extends Document {
     street?: string;
     city?: string;
     state?: string;
+
     zip?: string;
   };
   comparePassword(password: string): Promise<boolean>; // Method to compare passwords
@@ -21,33 +22,33 @@ const userSchema: Schema<IUser> = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: true
     },
     email: {
       type: String,
       required: true,
-      unique: true,
+      unique: true
     },
     password: {
       type: String,
-      required: true,
+      required: true
     },
     role: {
       type: String,
       enum: ["seller", "buyer"], // Accept only "seller" or "buyer"
-      default: "buyer", // Default role is "buyer"
+      default: "buyer" // Default role is "buyer"
     },
     address: {
       type: {
         street: { type: String },
         city: { type: String },
         state: { type: String },
-        zip: { type: String },
-      },
-    },
+        zip: { type: String }
+      }
+    }
   },
   {
-    timestamps: true, // Adds createdAt and updatedAt fields
+    timestamps: true // Adds createdAt and updatedAt fields
   }
 );
 

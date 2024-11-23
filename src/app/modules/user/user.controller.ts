@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "./user.services";
+import { ZodError } from "zod";
+import { UserValidation } from "./user.validation";
 
 // Create a new user
 async function createUserHandler(req: Request, res: Response): Promise<void> {
@@ -35,8 +37,8 @@ async function loginUserHandler(req: Request, res: Response): Promise<void> {
       message: "Login successful.",
       data: {
         user: result.user,
-        token: result.token,
-      },
+        token: result.token
+      }
     });
   } catch (error) {
     res.status(500).json({ success: false, message: (error as Error).message });
@@ -72,14 +74,33 @@ async function getUserByIdHandler(req: Request, res: Response): Promise<void> {
 async function updateUserHandler(req: Request, res: Response): Promise<void> {
   try {
     const userId = req.params.id;
-    const updatedUser = await UserService.updateUser(userId, req.body);
+
+    // Remove the role field from the request body
+    const { role, ...updatedData } = req.body;
+
+    // Validate the request body without the role field
+    const validatedData = UserValidation.updateUserSchema.parse({
+      body: updatedData
+    }).body;
+
+    // Update the user with the validated data (no role field)
+    const updatedUser = await UserService.updateUser(userId, validatedData);
     if (!updatedUser) {
       res.status(404).json({ success: false, message: "User not found" });
       return;
     }
     res.status(200).json({ success: true, data: updatedUser });
   } catch (error) {
-    res.status(400).json({ success: false, message: (error as Error).message });
+    if (error instanceof ZodError) {
+      // Handle Zod validation error
+      res
+        .status(400)
+        .json({ success: false, message: error.errors[0].message });
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: (error as Error).message });
+    }
   }
 }
 
@@ -94,7 +115,7 @@ async function deleteUserHandler(req: Request, res: Response): Promise<void> {
     }
     res.status(200).json({
       success: true,
-      message: "User deleted successfully",
+      message: "User deleted successfully"
     });
   } catch (error) {
     res.status(500).json({ success: false, message: (error as Error).message });
@@ -107,5 +128,5 @@ export const UserController = {
   getUserByIdHandler,
   loginUserHandler,
   updateUserHandler,
-  deleteUserHandler,
+  deleteUserHandler
 };
