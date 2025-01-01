@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @map("_id") @default(uuid()) // Unique identifier for the user
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("BUYER") // Enum to represent "seller" or "buyer"
+  address   Address? // Embedded address type
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  realEstateListings RealEstateListing[]  // One-to-many relation with RealEstateListing
+
+  @@map("users")
+}
+
+model Address {
+  id      String @id @map("_id") @default(uuid())
+  street  String?
+  city    String?
+  state   String?
+  zip     String?
+  userId  String  @unique
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("addresses")
+}
+
+model RealEstateListing {
+  id          String   @id @map("_id") 
+  name        String
+  description String
+  images      String[] // Array of strings for image URLs
+  location    String
+  price       Float    // Prisma uses Float for numbers with decimal places
+  bedrooms    Int
+  bathrooms   Int
+  area        Float
+  createdAt   DateTime @default(now())      // Automatically tracks creation timestamp
+  updatedAt   DateTime @updatedAt           // Automatically tracks update timestamp
+  
+  userId      String  // Foreign key referencing the User model
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade) // Relation to User model
+
+  @@map("real_estate_listings") // Map to a table named "real_estate_listings"
+}
